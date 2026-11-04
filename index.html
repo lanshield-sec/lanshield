@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>蓝盾安全 — 快速反应型 · 低资源 · 本地 AI 安全软件</title>
+<meta name="description" content="蓝盾安全：纯 C 语言编写的 Windows 安全软件，文件级回滚、勒索防护、本地 AI 查杀，轻量低占用，为低配老机器而生。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2l8 3v6c0 5.2-3.4 9.7-8 11-4.6-1.3-8-5.8-8-11V5l8-3z' fill='%231c56a8'/%3E%3Cpath d='M12 5.2l5.5 2.1V11c0 3.9-2.4 7.3-5.5 8.5-3.1-1.2-5.5-4.6-5.5-8.5V7.3L12 5.2z' fill='%23ffffff' opacity='0.9'/%3E%3C/svg%3E">
+<style>
+/* ===== 蓝盾安全官网 · 全局样式 ===== */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --blue: #1c56a8;
+  --blue-dark: #15407f;
+  --blue-deep: #0f2f5e;
+  --blue-tint: #eef4fb;
+  --text: #22303f;
+  --text-sub: #5d6d7e;
+  --line: #e3eaf3;
+  --bg: #ffffff;
+  --bg-alt: #f5f8fc;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: "Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", "Source Han Sans SC", sans-serif;
+  color: var(--text);
+  background: var(--bg);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+.container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+/* ===== 按钮 ===== */
+.btn {
+  display: inline-block;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: background .15s ease, color .15s ease, border-color .15s ease;
+}
+.btn-primary { background: var(--blue); color: #fff; }
+.btn-primary:hover { background: var(--blue-dark); }
+.btn-ghost { background: transparent; color: var(--blue); border: 1px solid var(--blue); }
+.btn-ghost:hover { background: var(--blue-tint); }
+.btn-light { background: #fff; color: var(--blue-deep); }
+.btn-light:hover { background: #eaf1fa; }
+.btn-sm { padding: 8px 18px; font-size: 14px; }
+.btn-lg { padding: 14px 34px; font-size: 16px; }
+
+/* ===== 顶部导航 ===== */
+.site-header {
+  position: sticky; top: 0; z-index: 100;
+  background: #fff;
+  border-bottom: 1px solid var(--line);
+}
+.nav-inner {
+  display: flex; align-items: center; gap: 28px;
+  height: 64px;
+}
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.brand-icon { width: 26px; height: 26px; }
+.brand-name { font-size: 19px; font-weight: 700; color: var(--blue-deep); letter-spacing: 1px; }
+.main-nav { display: flex; gap: 28px; margin-left: auto; }
+.main-nav a {
+  color: var(--text); text-decoration: none; font-size: 15px;
+  padding: 4px 2px; border-bottom: 2px solid transparent;
+}
+.main-nav a:hover { color: var(--blue); border-bottom-color: var(--blue); }
+.nav-download { margin-left: 4px; }
+.nav-toggle { display: none; }
+
+/* ===== 首屏 ===== */
+.hero { background: linear-gradient(180deg, var(--bg-alt) 0%, #fff 100%); padding: 72px 0 40px; }
+.hero-inner {
+  display: flex; align-items: center; gap: 48px;
+}
+.hero-text { flex: 1.2; }
+.hero-eyebrow {
+  display: inline-block;
+  color: var(--blue); font-size: 14px; font-weight: 600;
+  background: var(--blue-tint);
+  padding: 5px 14px; border-radius: 20px; margin-bottom: 20px;
+}
+.hero-text h1 {
+  font-size: 44px; line-height: 1.25; color: var(--blue-deep);
+  font-weight: 700; letter-spacing: 1px; margin-bottom: 18px;
+}
+.hero-sub { font-size: 17px; color: var(--text-sub); margin-bottom: 28px; }
+.hero-actions { display: flex; gap: 14px; margin-bottom: 16px; }
+.hero-note { font-size: 13px; color: #8a99aa; }
+.hero-visual { flex: 1; display: flex; justify-content: center; }
+.hero-shield { width: 230px; height: auto; filter: drop-shadow(0 14px 26px rgba(28, 86, 168, .22)); }
+
+.hero-strips {
+  display: flex; align-items: center; justify-content: center;
+  gap: 36px; margin-top: 56px; padding-top: 28px;
+  border-top: 1px solid var(--line);
+}
+.strip { text-align: center; }
+.strip b { display: block; font-size: 22px; color: var(--blue-deep); }
+.strip span { font-size: 13px; color: var(--text-sub); }
+.strip-div { width: 1px; height: 34px; background: var(--line); }
+
+/* ===== 通用区块 ===== */
+.section { padding: 76px 0; }
+.section-alt { background: var(--bg-alt); }
+.section-title {
+  text-align: center; font-size: 30px; color: var(--blue-deep);
+  letter-spacing: 2px; margin-bottom: 12px;
+}
+.section-sub { text-align: center; color: var(--text-sub); font-size: 15px; margin-bottom: 44px; }
+.section-sub.light { color: #c9dcf5; }
+.section-title.light { color: #fff; }
+
+/* ===== 功能卡片 ===== */
+.grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+}
+.card {
+  background: #fff; border: 1px solid var(--line); border-radius: 10px;
+  padding: 28px 24px;
+  transition: box-shadow .15s ease, transform .15s ease;
+}
+.card:hover { box-shadow: 0 8px 24px rgba(28, 86, 168, .10); transform: translateY(-2px); }
+.card-icon {
+  width: 46px; height: 46px; border-radius: 9px;
+  background: var(--blue-tint); color: var(--blue);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 16px;
+}
+.card-icon svg { width: 26px; height: 26px; }
+.card h3 { font-size: 17px; color: var(--blue-deep); margin-bottom: 10px; }
+.card p { font-size: 14px; color: var(--text-sub); line-height: 1.8; }
+
+/* ===== 系统要求对照表 ===== */
+.req-table-wrap { overflow-x: auto; }
+.req-table {
+  width: 100%; max-width: 960px; margin: 0 auto;
+  border-collapse: separate; border-spacing: 0;
+  background: #fff; border: 1px solid var(--line); border-radius: 10px;
+  overflow: hidden; font-size: 14px;
+}
+.req-table th, .req-table td {
+  padding: 14px 18px; text-align: left; vertical-align: top;
+  border-bottom: 1px solid var(--line); line-height: 1.7;
+}
+.req-table tbody tr:last-child td { border-bottom: none; }
+.req-table thead th {
+  background: var(--blue-tint); color: var(--blue-deep);
+  font-size: 16px; padding-top: 16px; padding-bottom: 16px;
+}
+.req-table thead th.rec { background: #dbe8f8; }
+.req-table small {
+  display: block; font-size: 12px; font-weight: 400;
+  color: var(--text-sub); margin-top: 4px;
+}
+.req-table .req-corner { width: 96px; }
+.req-table .req-label {
+  color: var(--blue); font-weight: 600; white-space: nowrap; width: 96px;
+}
+.req-table td.rec { background: #f7fafd; }
+.req-note {
+  max-width: 960px; margin: 16px auto 0;
+  font-size: 12.5px; color: var(--text-sub); line-height: 1.8;
+}
+.req-note2 {
+  max-width: 960px; margin: 6px auto 0;
+  font-size: 12.5px; color: #93a3b5;
+}
+
+/* ===== 下载区 ===== */
+.download { background: linear-gradient(135deg, var(--blue-deep) 0%, var(--blue) 100%); }
+.download-inner { text-align: center; }
+.download-note { margin-top: 16px; font-size: 13px; color: #c9dcf5; }
+
+/* ===== 页脚 ===== */
+.site-footer { background: #0c2447; padding: 40px 0; text-align: center; }
+.footer-brand { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 12px; }
+.footer-brand .brand-icon { width: 22px; height: 22px; }
+.footer-brand span { color: #fff; font-weight: 700; font-size: 16px; letter-spacing: 1px; }
+.footer-desc { color: #9db4d2; font-size: 13px; line-height: 1.9; margin-bottom: 12px; }
+.footer-copy { color: #6f8cb3; font-size: 12px; }
+
+/* ===== 目前问题 ===== */
+.issues { background: var(--bg); }
+.issues-list {
+  max-width: 960px; margin: 0 auto;
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px;
+}
+.issue-item {
+  background: #fff; border: 1px solid var(--line);
+  border-left: 4px solid #d97706; border-radius: 10px;
+  padding: 22px 20px;
+}
+.issue-item h3 { font-size: 16px; color: var(--blue-deep); margin-bottom: 10px; }
+.issue-item p { font-size: 13.5px; color: var(--text-sub); line-height: 1.8; }
+
+/* ===== 响应式 ===== */
+@media (max-width: 860px) {
+  .hero-inner { flex-direction: column; text-align: center; }
+  .hero-text h1 { font-size: 32px; }
+  .hero-actions { justify-content: center; }
+  .hero-shield { width: 170px; }
+  .grid { grid-template-columns: 1fr; }
+  .issues-list { grid-template-columns: 1fr; }
+  .req-grid { grid-template-columns: 1fr; }
+  .hero-strips { flex-direction: column; gap: 16px; }
+  .strip-div { display: none; }
+
+  .main-nav {
+    display: none; position: absolute; top: 64px; left: 0; right: 0;
+    background: #fff; flex-direction: column; gap: 0;
+    border-bottom: 1px solid var(--line); padding: 8px 24px;
+  }
+  .main-nav.open { display: flex; }
+  .main-nav a { padding: 12px 0; border-bottom: none; }
+  .nav-download { display: none; }
+  .nav-toggle {
+    display: flex; flex-direction: column; gap: 5px;
+    margin-left: auto; background: none; border: 0; cursor: pointer; padding: 6px;
+  }
+  .nav-toggle span { width: 22px; height: 2px; background: var(--blue-deep); display: block; }
+}
+</style>
+</head>
+<body id="top">
+
+<!-- ===== 顶部导航 ===== -->
+<header class="site-header">
+  <div class="container nav-inner">
+    <a class="brand" href="#top">
+      <svg class="brand-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 2l8 3v6c0 5.2-3.4 9.7-8 11-4.6-1.3-8-5.8-8-11V5l8-3z" fill="#1c56a8"/>
+        <path d="M12 5.2l5.5 2.1V11c0 3.9-2.4 7.3-5.5 8.5-3.1-1.2-5.5-4.6-5.5-8.5V7.3L12 5.2z" fill="#ffffff" opacity="0.9"/>
+        <path d="M12 8l3.6 1.4V12c0 2.5-1.6 4.7-3.6 5.6-2-.9-3.6-3.1-3.6-5.6V9.4L12 8z" fill="#1c56a8"/>
+      </svg>
+      <span class="brand-name">蓝盾安全</span>
+    </a>
+    <nav class="main-nav" id="mainNav">
+      <a href="#features">产品功能</a>
+      <a href="#requirements">系统要求</a>
+      <a href="#about">关于蓝盾</a>
+      <a href="#download">下载</a>
+    </nav>
+    <a class="btn btn-primary btn-sm nav-download" href="#download">立即下载</a>
+    <button class="nav-toggle" id="navToggle" aria-label="展开菜单">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- ===== 首屏主视觉 ===== -->
+<section class="hero">
+  <div class="container hero-inner">
+    <div class="hero-text">
+      <p class="hero-eyebrow">快速反应型 · 低资源 · 本地 AI</p>
+      <h1>为老机器而生的<br>本地安全守护</h1>
+      <p class="hero-sub">蓝盾安全 —— 纯 C 语言编写的 Windows 安全软件。<br>后台常驻、秒级反应，AI 研判离线完成，数据不出本机。</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary btn-lg" href="蓝盾安全_Setup.exe">免费下载</a>
+        <a class="btn btn-ghost btn-lg" href="#features">了解功能</a>
+      </div>
+      <p class="hero-note">支持 Windows 10 / 11 · 低配电脑流畅运行</p>
+    </div>
+    <div class="hero-visual" aria-hidden="true">
+      <svg class="hero-shield" viewBox="0 0 240 260">
+        <path d="M120 10l92 34v70c0 60-39 112-92 126-53-14-92-66-92-126V44l92-34z" fill="#1c56a8"/>
+        <path d="M120 34l68 25.5V112c0 44.5-28.5 83-68 94-39.5-11-68-49.5-68-94V59.5L120 34z" fill="#ffffff" opacity="0.92"/>
+        <path d="M120 66l44 16.5V116c0 29-18 54-44 62.5-26-8.5-44-33.5-44-62.5V82.5L120 66z" fill="#1c56a8"/>
+        <path d="M102 118l13 13 26-29" stroke="#ffffff" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+  </div>
+  <div class="hero-strips container">
+    <div class="strip"><b>3827</b><span>关键文件快照守护</span></div>
+    <div class="strip-div"></div>
+    <div class="strip"><b>60 秒</b><span>勒索特征快速检测窗口</span></div>
+    <div class="strip-div"></div>
+    <div class="strip"><b>100% 本地</b><span>AI 研判离线运行</span></div>
+  </div>
+</section>
+
+<!-- ===== 核心功能 ===== -->
+<section class="section" id="features">
+  <div class="container">
+    <h2 class="section-title">五大核心能力</h2>
+    <p class="section-sub">查杀、隔离、回滚、防护，一套轻量工具全部覆盖。</p>
+    <div class="grid">
+
+      <div class="card">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 5V2L7 6l5 4V7c3.3 0 6 2.7 6 6s-2.7 6-6 6-6-2.7-6-6H4c0 4.4 3.6 8 8 8s8-3.6 8-8-3.6-8-8-8z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        </div>
+        <h3>文件级回滚</h3>
+        <p>自实现 LZSS 压缩快照，默认覆盖 3827 个关键文件；备份目录采用 ACL 权限隔离，防勒索加密；回滚后生成报告「成功 N / 失败 M」，每一步都有交代。</p>
+      </div>
+
+      <div class="card">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 10V7a4 4 0 118 0v3" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+        </div>
+        <h3>勒索防护</h3>
+        <p>60 秒内检测到 ≥3 个勒索特征文件，立即触发红色警报并自动回滚；自动识别 STOP / Djvu 等勒索家族，直通 No More Ransom 官方解密工具页。</p>
+      </div>
+
+      <div class="card">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 5.5V3m0 18v-2.5M5.5 12H3m18 0h-2.5M7.4 7.4 5.6 5.6m12.8 12.8 1.8 1.8M16.6 7.4l1.8-1.8M7.4 16.6l-1.8 1.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </div>
+        <h3>澜芯引擎 · 本地 AI 查杀</h3>
+        <p>基于本地 Ollama 推理，离线可用、断网照常用；AI 对可疑文件二次研判，从严处理不降级。整个过程不联网、不付费，数据不出本机。</p>
+      </div>
+
+      <div class="card">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        </div>
+        <h3>隔离区</h3>
+        <p>可疑文件统一移入隔离区，与系统安全隔离存放；随时可查看、可恢复，误隔离一键还原，确认安全后再清空，处置安心不手抖。</p>
+      </div>
+
+      <div class="card">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 3l9 5-9 5-9-5 9-5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M3 13l9 5 9-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        </div>
+        <h3>分层防护策略</h3>
+        <p>「绝不容忍级」威胁自动处理，「询问级」风险弹窗交由你判断。MBR 引导扇区、关键文件、注册表、自启项全程常驻监控，后台守护即刻响应。</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===== 系统要求 ===== -->
+<section class="section section-alt" id="requirements">
+  <div class="container">
+    <h2 class="section-title">系统要求</h2>
+    <p class="section-sub">不吃硬件、不抢资源，老爷机也能稳稳跑。</p>
+    <div class="req-table-wrap">
+      <table class="req-table">
+        <thead>
+          <tr>
+            <th class="req-corner"></th>
+            <th>最低配置<small>仅本地防护，不开 AI 查杀</small></th>
+            <th class="rec">推荐配置<small>AI 查杀全功能：快速反应型 0.5B + 思考型 1.5B 双引擎</small></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="req-label">系统</td>
+            <td>Windows 10 64 位（本体可跑 Win7）</td>
+            <td class="rec">Windows 10 64 位</td>
+          </tr>
+          <tr>
+            <td class="req-label">CPU</td>
+            <td>双核 1.6GHz 以上</td>
+            <td class="rec">双核 2.5GHz 以上（推荐 4 核）</td>
+          </tr>
+          <tr>
+            <td class="req-label">内存</td>
+            <td>1GB</td>
+            <td class="rec">4GB（推荐 8GB，实测 8GB 跑双模型流畅）</td>
+          </tr>
+          <tr>
+            <td class="req-label">显卡</td>
+            <td>无需独立显卡（集成显卡即可）</td>
+            <td class="rec">无需独立显卡（AI 纯 CPU 推理，不依赖 GPU）</td>
+          </tr>
+          <tr>
+            <td class="req-label">磁盘</td>
+            <td>50MB 可用</td>
+            <td class="rec">4.5GB 可用（Ollama 引擎 + AI 模型；只装快速模型可减至 1.5GB）</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="req-note">实测说明：以上配置为实测数据（实测机：i3-4170 / 8GB / GT705；Ollama 双模型 qwen2.5:0.5b + landun-scan + deepseek-r1:1.5b 共约 4.3GB）。</p>
+      <p class="req-note2">深度沙箱查杀另需 Windows 专业版并已启用 Windows 沙箱功能；常规查杀与后台防护不受此限。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 下载区 ===== -->
+<section class="section download" id="download">
+  <div class="container download-inner">
+    <h2 class="section-title light">立即安装蓝盾安全</h2>
+    <p class="section-sub light">主程序 SecurityCenter.exe 负责病毒查杀、隔离区与设置；后台守护 SecurityMonitor.exe 常驻托盘，盯紧 MBR、注册表与自启项。</p>
+    <a class="btn btn-light btn-lg" href="蓝盾安全_Setup.exe">下载蓝盾安全安装包</a>
+    <p class="download-note">安装包体积小、安装快，下一步即可完成部署。</p>
+  </div>
+</section>
+
+<!-- ===== 页脚 ===== -->
+<footer class="site-footer" id="about">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <svg class="brand-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 2l8 3v6c0 5.2-3.4 9.7-8 11-4.6-1.3-8-5.8-8-11V5l8-3z" fill="#7ea8dd"/>
+      </svg>
+      <span>蓝盾安全</span>
+    </div>
+    <p class="footer-desc">纯 C 语言（w64devkit / gcc）编写 · 快速反应型本地安全软件<br>查杀 / 隔离 / 回滚 / 勒索防护 / 本地 AI 研判，全部在本机完成。</p>
+    <p class="footer-copy">© 2026 蓝盾安全 · 本地守护，数据不出本机</p>
+  </div>
+</footer>
+
+<!-- ===== 目前问题 ===== -->
+<section class="section issues" id="issues">
+  <div class="container">
+    <h2 class="section-title">目前问题</h2>
+    <p class="section-sub">如实公开当前版本仍待解决的已知问题，我们会持续推进。</p>
+    <div class="issues-list">
+      <div class="issue-item">
+        <h3>弹窗误判未解决</h3>
+        <p>常规安装、运行软件时，防护可能弹出「是否出现问题？」询问窗口（即误报）。分层策略已区分「绝不容忍级」自动处置与「询问级」交由用户判断，但询问级弹窗仍存在误判，识别规则正在持续优化，尚未完全解决。</p>
+      </div>
+      <div class="issue-item">
+        <h3>图形化界面未完成</h3>
+        <p>当前为命令行（控制台）界面，功能完整但界面朴素。图形化界面（GUI）已在规划中，暂未完成。</p>
+      </div>
+      <div class="issue-item">
+        <h3>勒索回滚失败自动匹配解密工具</h3>
+        <p>回滚失败时可一键直通 No More Ransom 官网，但「按勒索家族自动匹配对应解密工具」的功能尚待完善。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+// 蓝盾安全官网 · 少量原生交互
+(function () {
+  "use strict";
+
+  // 移动端导航开合
+  var toggle = document.getElementById("navToggle");
+  var nav = document.getElementById("mainNav");
+  if (toggle && nav) {
+    toggle.addEventListener("click", function () {
+      nav.classList.toggle("open");
+    });
+    // 点击导航项后收起菜单
+    nav.addEventListener("click", function (e) {
+      if (e.target.tagName === "A") nav.classList.remove("open");
+    });
+  }
+
+  // 页脚年份自动更新
+  var yearEl = document.querySelector(".footer-copy");
+  if (yearEl) {
+    yearEl.textContent =
+      "© " + new Date().getFullYear() + " 蓝盾安全 · 本地守护，数据不出本机";
+  }
+})();
+</script>
+</body>
+</html>
