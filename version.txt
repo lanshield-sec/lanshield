@@ -1,0 +1,4 @@
+1.7
+2026-11-11
+快速反应引擎证据链升级：行为字符串证据入判定、本地策略树兜底改判、修复提示词复述误判、修复拖拽失效
+https://lanshield-sec.github.io/lanshield/%E8%93%9D%E7%9B%BE%E5%AE%89%E5%85%A8_Setup.exe
