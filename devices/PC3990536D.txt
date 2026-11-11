@@ -1,0 +1,5 @@
+machine_id=PC3990536D
+name=DESKTOP-32PORQF
+cpu=Intel(R) Xeon(R) Platinum 8255C CPU @ 2.50GHz
+mem=16.0GB
+os=Windows 10 IoT Enterprise LTSC 2024
