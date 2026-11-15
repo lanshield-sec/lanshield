@@ -1,0 +1,5 @@
+machine_id=PC96A4EC49
+name=JOHN-PC
+cpu=AMD EPYC 7513 32-Core Processor                
+mem=4.0GB
+os=Windows 10 Pro
