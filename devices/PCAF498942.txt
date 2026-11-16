@@ -1,0 +1,5 @@
+machine_id=PCAF498942
+name=ZDS-OREGON-67
+cpu=Intel(R) Xeon(R) Silver 4316 CPU @ 2.30GHz
+mem=4.0GB
+os=Windows 10 IoT Enterprise
