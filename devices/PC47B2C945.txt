@@ -1,0 +1,5 @@
+machine_id=PC47B2C945
+name=DESKTOP-78LV0SX
+cpu=Intel Core Processor (Haswell)
+mem=16.0GB
+os=Windows 10 Pro
