@@ -1,0 +1,5 @@
+machine_id=PC37CD8498
+name=ADELRODRI
+cpu=AMD EPYC 9V74 80-Core Processor                
+mem=16.0GB
+os=Windows 10 Enterprise
