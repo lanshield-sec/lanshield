@@ -1,0 +1,5 @@
+machine_id=PC70521553
+name=DESKTOP-QSKBLV3
+cpu=Intel(R) Xeon(R) Silver 4208 CPU @ 2.10GHz
+mem=4.0GB
+os=Windows 10 Pro
