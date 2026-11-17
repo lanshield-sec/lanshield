@@ -1,0 +1,5 @@
+machine_id=PCCB35483F
+name=KARINA-PC
+cpu=AMD EPYC 9555 64-Core Processor                
+mem=4.0GB
+os=Windows 10 IoT Enterprise
