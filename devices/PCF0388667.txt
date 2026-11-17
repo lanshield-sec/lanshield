@@ -1,0 +1,5 @@
+machine_id=PCF0388667
+name=DESKTOP-UNKAULD
+cpu=AMD EPYC 9555 64-Core Processor                
+mem=4.0GB
+os=Windows 10 IoT Enterprise LTSC 2021
