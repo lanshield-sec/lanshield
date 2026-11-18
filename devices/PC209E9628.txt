@@ -1,0 +1,5 @@
+machine_id=PC209E9628
+name=ANWJAMES
+cpu=AMD EPYC 7763 64-Core Processor                
+mem=16.0GB
+os=Windows 10 Enterprise
