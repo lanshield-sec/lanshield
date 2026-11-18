@@ -1,0 +1,5 @@
+machine_id=PC62939F32
+name=DESKTOP-SV0SEPC
+cpu=Intel Core Processor (Haswell)
+mem=16.0GB
+os=Windows 10 Pro
