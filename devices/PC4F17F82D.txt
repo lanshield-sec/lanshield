@@ -1,0 +1,5 @@
+machine_id=PC4F17F82D
+name=DESK-453REX6JIU
+cpu=Intel(R) Xeon(R) CPU @ 2.30GHz
+mem=4.0GB
+os=Windows 10 Pro
